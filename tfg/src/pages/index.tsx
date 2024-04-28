@@ -9,7 +9,7 @@ export default function Home() {
   useEffect(() => {
     const connect = async () => {
       try {
-        const client = await fetch("http://localhost:3000/api/mongodb/connection");
+        const client = await fetch("/api/mongodb/connection");
       } catch (error) {
         console.error(error);
       }
