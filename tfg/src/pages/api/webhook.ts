@@ -3,7 +3,7 @@ const { MongoClient } = require('mongodb')
 
 const client = new MongoClient(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
-module.exports = async (req: any, res: any) => {
+export default async function handler(req: any, res: any) {
     try {
         await client.connect();
         const data = await json(req);
