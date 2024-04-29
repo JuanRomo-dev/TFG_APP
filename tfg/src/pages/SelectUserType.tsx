@@ -13,12 +13,14 @@ const SelectUserType = () => {
         event.preventDefault();
 
         try {
+            const userDataWithUserType = { ...userData, userType };
+
             await fetch('/api/mongodb/insertUserType', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({userType}),
+                body: JSON.stringify(userDataWithUserType),
             });
 
             if (userType === 'medico') {
@@ -36,7 +38,7 @@ const SelectUserType = () => {
             <h1>
                 Por favor, selecciona tu tipo de usuario.
             </h1>
-            <form>
+            <form onSubmit={handleSubmit}>
                 <label>
                     <input type="radio" value="medico" checked={userType === 'medico'} onChange={handleUserTypeChange} />
                     Médico
