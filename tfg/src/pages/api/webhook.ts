@@ -11,6 +11,10 @@ export default async function handler(req: any, res: any) {
         const db = client.db('tfg');
         const collection = db.collection('Usuarios');
         await collection.insertOne(data);
+
+        res.writeHead(302 , {
+            'Location': 'SelectUserType?clerkUserId=${data.clerkUserId}&firstName=${data.firstName}&lastName=${data.lastName}&email=${data.email}'
+        })
         
         res.status(200).send('OK connection');
     } catch (error: any) {
