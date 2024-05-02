@@ -17,6 +17,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             console.error('Error while connecting to MongoDB', e);
             throw e;
         }
+        finally {
+            await client.close();
+            console.log("Connection with MongoDB closed!");
+        }
     }
 };
   
