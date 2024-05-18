@@ -27,9 +27,9 @@ const IndexPage = () => {
       });
 
       if (userType === 'medico') {
-        router.push('/dashboard-medico');
+        router.push('/dashboard_medico');
       } else if (userType === 'paciente') {
-        router.push('/dashboard-paciente');
+        router.push('/dashboard_paciente');
       }
     } catch (error) {
       console.error('Error al procesar el formulario: ', error);
@@ -77,6 +77,7 @@ const IndexPage = () => {
               className="ml-2 border-2 border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
               type="email"
               value={email}
+              required
               onChange={handleEmailChange}
             ></input>
           </label>
