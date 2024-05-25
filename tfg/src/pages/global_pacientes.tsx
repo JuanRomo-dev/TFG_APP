@@ -1,10 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { useUser } from '@clerk/clerk-react';
 import Sidebar from './api/react_components/sidebar_medico';
 
 const Lista_Global = () => {
+  const { user } = useUser();
   const router = useRouter();
   const [pacientes, setPacientes] = React.useState([]);
+  const [pacientesAsignados, setPacientesAsignados] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -14,12 +17,49 @@ const Lista_Global = () => {
         console.log('Datos de pacientes:', data);
         setPacientes(data);
         console.log('Pacientesss:', pacientes);
+
+        const pacientesAsignadosStorage = localStorage.getItem('pacientesAsignados');
+        if (pacientesAsignadosStorage) {
+          setPacientesAsignados(JSON.parse(pacientesAsignadosStorage));
+        }
       } catch (error) {
         console.error('Error al obtener el listado de pacientes', error);
       }
     };
     fetchData();
   }, []);
+
+  const asignarPaciente = async (pacienteId: string): Promise<void> => {
+    if (!user) {
+      console.error('Usuario no autenticado');
+      return;
+    }
+
+    try {
+      const response = await fetch('api/mongodb/asignar_paciente', {   // Cambiar ruta API a asignar un paciente al medico (asignar_paciente.tsx)
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          medicoClerkUserId: user.id,
+          pacienteId: pacienteId,
+        }),
+      });
+      console.log('Respuesta:', response);
+
+      if (response.ok) {
+        console.log('Paciente vinculado correctamente');
+        setPacientesAsignados([...pacientesAsignados, pacienteId]);
+        localStorage.setItem('pacientesAsignados', JSON.stringify([...pacientesAsignados, pacienteId]));
+      } else {
+        console.error('Error al vincular al paciente');
+      }
+    } catch (error) {
+      console.error('Error al vincular al paciente', error);
+    }
+  };
+
 
   return (
     <div className="flex flex-row">
@@ -66,8 +106,15 @@ const Lista_Global = () => {
                     Email: {paciente.user.email}
                   </p>
                 </div>
-                <button className="border-white border-2 rounded-md px-4 py-2 mt-2 hover:bg-slate-50 hover:text-black">
-                  Asignar paciente
+                <button onClick={() => asignarPaciente(paciente._id)} 
+                    className={`border-2 rounded-md px-4 py-2 mt-2 ${
+                      pacientesAsignados.includes(paciente._id)
+                        ? 'bg-green-700 text-white'
+                        : 'border-white text-white hover:bg-slate-50 hover:text-black'
+                    }`}
+                    disabled={pacientesAsignados.includes(paciente._id)}
+                >                 
+                  {pacientesAsignados.includes(paciente._id) ? 'Asignado' : 'Asignar paciente'}
                 </button>
               </div>
             </li>
