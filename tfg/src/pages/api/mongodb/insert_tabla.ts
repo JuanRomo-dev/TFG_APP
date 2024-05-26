@@ -13,16 +13,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             await client.connect();
             const db = client.db(DATABASE_NAME);
 
-            const tablaExiste = await db.collection('Juego').findOne({name, playerId, completado: false});
+            const tablaExiste = await db.collection('Juego').findOne({ name, playerId, completed: false });
+            console.log('El player id es:', playerId);
 
             if (tablaExiste) {
                 await client.close();
                 return res.status(400).json({ error: 'Ya existe una tabla asociada a ese paciente' });
             }
+            
+            let angle: number;
+            angle = parseInt(req.body.angle);
+            let totalSeries: number;
+            totalSeries = parseInt(req.body.totalSeries);
+            let totalReps: number;
+            totalReps = parseInt(req.body.totalReps);
+            let gameTime = 0.0;
 
-            const { angle, totalSeries, totalReps } = req.body;
-
-            await db.collection('Juego').insertOne({ name, playerId, angle, totalSeries, totalReps, completado: false });
+            await db.collection('Juego').insertOne({ angle, gameTime, name, playerId, totalReps, totalSeries, completed: false });
             await client.close();
 
             res.status(200).json({ message: 'Tabla del ejercicio insertada correctamente' });
