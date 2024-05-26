@@ -3,11 +3,26 @@ import { useRouter } from 'next/router';
 import { useUser } from '@clerk/clerk-react';
 import Sidebar from './api/react_components/sidebar_medico';
 
+interface User {
+  _id: string;
+  clerkUserId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  image: string;
+}
+
+interface Paciente {
+  _id: string;
+  user: User;
+  medicoId: string;
+}
+
 const Lista_Global = () => {
   const { user } = useUser();
   const router = useRouter();
-  const [pacientes, setPacientes] = React.useState([]);
-  const [pacientesAsignados, setPacientesAsignados] = useState<string[]>([]);
+  const [pacientes, setPacientes] = useState<Paciente[]>([]);
+  const [pacientesAsignados, setPacientesAsignados] = useState<Paciente[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -18,7 +33,8 @@ const Lista_Global = () => {
         setPacientes(data);
         console.log('Pacientesss:', pacientes);
 
-        const pacientesAsignadosStorage = localStorage.getItem('pacientesAsignados');
+        const pacientesAsignadosStorage =
+          localStorage.getItem('pacientesAsignados');
         if (pacientesAsignadosStorage) {
           setPacientesAsignados(JSON.parse(pacientesAsignadosStorage));
         }
@@ -36,7 +52,8 @@ const Lista_Global = () => {
     }
 
     try {
-      const response = await fetch('api/mongodb/asignar_paciente', {   // Cambiar ruta API a asignar un paciente al medico (asignar_paciente.tsx)
+      const response = await fetch('api/mongodb/asignar_paciente', {
+        // Cambiar ruta API a asignar un paciente al medico (asignar_paciente.tsx)
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -50,8 +67,17 @@ const Lista_Global = () => {
 
       if (response.ok) {
         console.log('Paciente vinculado correctamente');
-        setPacientesAsignados([...pacientesAsignados, pacienteId]);
-        localStorage.setItem('pacientesAsignados', JSON.stringify([...pacientesAsignados, pacienteId]));
+        const pacientesAsignado = pacientes.find(
+          (paciente) => paciente._id == pacienteId
+        );
+        if (pacientesAsignado) {
+          const nuevosPacientes = [...pacientesAsignados, pacientesAsignado];
+          setPacientesAsignados(nuevosPacientes);
+          localStorage.setItem(
+            'pacientesAsignados',
+            JSON.stringify(nuevosPacientes)
+          );
+        }
       } else {
         console.error('Error al vincular al paciente');
       }
@@ -59,7 +85,6 @@ const Lista_Global = () => {
       console.error('Error al vincular al paciente', error);
     }
   };
-
 
   return (
     <div className="flex flex-row">
@@ -106,15 +131,20 @@ const Lista_Global = () => {
                     Email: {paciente.user.email}
                   </p>
                 </div>
-                <button onClick={() => asignarPaciente(paciente._id)} 
-                    className={`border-2 rounded-md px-4 py-2 mt-2 ${
-                      pacientesAsignados.includes(paciente._id)
-                        ? 'bg-green-700 text-white'
-                        : 'border-white text-white hover:bg-slate-50 hover:text-black'
-                    }`}
-                    disabled={pacientesAsignados.includes(paciente._id)}
-                >                 
-                  {pacientesAsignados.includes(paciente._id) ? 'Asignado' : 'Asignar paciente'}
+                <button
+                  onClick={() => asignarPaciente(paciente._id)}
+                  className={`border-2 rounded-md px-4 py-2 mt-2 ${
+                    pacientesAsignados.some((p) => p._id === paciente._id)
+                      ? 'bg-green-700 text-white'
+                      : 'border-white text-white hover:bg-slate-50 hover:text-black'
+                  }`}
+                  disabled={pacientesAsignados.some(
+                    (p) => p._id === paciente._id
+                  )}
+                >
+                  {pacientesAsignados.some((p) => p._id === paciente._id)
+                    ? 'Asignado'
+                    : 'Asignar paciente'}
                 </button>
               </div>
             </li>

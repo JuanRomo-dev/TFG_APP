@@ -3,12 +3,25 @@ import { useRouter } from 'next/router';
 import { useUser } from '@clerk/clerk-react';
 import Sidebar from './api/react_components/sidebar_medico';
 
+interface User {
+  _id: string;
+  clerkUserId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  image: string;
+}
+
+interface Paciente {
+  _id: string;
+  user: User;
+  medicoId: string;
+}
+
 const Lista_Pacientes = () => {
   const { user } = useUser();
   const router = useRouter();
-  const [pacientesAsignados, setPacientesAsignados] = React.useState<string[]>(
-    []
-  );
+  const [pacientesAsignados, setPacientesAsignados] = useState<Paciente[]>([]);
 
   useEffect(() => {
     const fetchPacientes = async () => {
@@ -55,7 +68,9 @@ const Lista_Pacientes = () => {
             >
               <div className="p-4 flex flex-row gap-x-14 items-start ml-14">
                 <div className="w-16">
-                  {paciente.user.image === '' ? (
+                  {typeof paciente === 'object' &&
+                  'user' in paciente &&
+                  paciente.user.image === '' ? (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="250"
