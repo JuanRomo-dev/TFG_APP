@@ -114,7 +114,7 @@ const FormularioTabla = () => {
                 type="number"
                 value={angle}
                 onChange={(e) => setAngle(e.target.value)}
-                max="90"
+                max="80"
                 min="0"
                 className=" px-2 py-1.5 text-center  text-black font-semibold border rounded-lg"
                 required
