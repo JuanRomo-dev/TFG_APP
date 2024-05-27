@@ -5,6 +5,10 @@ import { Bar, Line } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
 import ChartAngleJump from './api/react_components/charts/jump_angle_chart_component';
 import ChartAngleGolf from './api/react_components/charts/golf_angle_chart_component';
+import ChartGolpesGolf from './api/react_components/charts/golpes_chart_component';
+import ChartPuntosGolf from './api/react_components/charts/puntos_chart_component';
+import ChartPuntosJump from './api/react_components/charts/puntos_chart_jump_component';
+import ChartJump from './api/react_components/charts/repeticiones_jump_chart_component';
 
 Chart.register(...registerables);
 
@@ -144,6 +148,11 @@ const DashboardMedico = () => {
                       juegos={juegos}
                       juegoName="hombros - minigolf"
                     />
+                    <ChartGolpesGolf
+                      juegos={juegos}
+                      juegoName="hombros - minigolf"
+                    />
+                    <ChartPuntosGolf juegos={juegos} juegoName={'hombros - minigolf'}/>
                   </div>
                   <div>
                     <h2 className="text-xl font-bold mb-4">
@@ -153,6 +162,8 @@ const DashboardMedico = () => {
                       juegos={juegos}
                       juegoName="tobillo - jumpgame"
                     />
+                    <ChartJump juegos={juegos} juegoName={'hombros - minigolf'}/>
+                    <ChartPuntosJump juegos={juegos} juegoName={'hombros - minigolf'}/>
                   </div>
                 </div>
               )}

@@ -94,7 +94,7 @@ const options = {
   plugins: {
     title: {
       display: true,
-      text: 'Progresión del movimiento en el tiempo',
+      text: 'Progresión del movimiento en el tiempo (De la última sesión de juego)',
       font: {
         size: 15 
       },
