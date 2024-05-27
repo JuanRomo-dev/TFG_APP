@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { Bar, Line } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
-import ChartComponent from './api/react_components/charts/chart_component';
+import ChartAngleJump from './api/react_components/charts/jump_angle_chart_component';
+import ChartAngleGolf from './api/react_components/charts/golf_angle_chart_component';
 
 Chart.register(...registerables);
 
@@ -139,16 +140,16 @@ const DashboardMedico = () => {
                     <h2 className="text-xl font-bold mb-4">
                       Estadísticas ejercicio hombro - Golf Game
                     </h2>
-                    <ChartComponent
+                    <ChartAngleGolf
                       juegos={juegos}
-                      juegoName="hombro - golfgame"
+                      juegoName="hombros - minigolf"
                     />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold mb-4">
                       Estadísticas tobillo - Jump Game
                     </h2>
-                    <ChartComponent
+                    <ChartAngleJump
                       juegos={juegos}
                       juegoName="tobillo - jumpgame"
                     />
