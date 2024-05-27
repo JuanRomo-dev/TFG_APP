@@ -70,6 +70,9 @@ const ChartComponent: React.FC<ChartComponentProps> = ({
     if (filtered.length > 0) {
       const rawInputIds = filtered.flatMap((juego) => juego.rawInput);
       fetchRawData(rawInputIds);
+    } else {
+      setRawData([]);
+      setIsLoading(false);
     }
   }, [juegos, juegoName]);
 
