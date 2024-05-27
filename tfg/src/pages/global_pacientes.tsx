@@ -53,7 +53,6 @@ const Lista_Global = () => {
 
     try {
       const response = await fetch('api/mongodb/asignar_paciente', {
-        // Cambiar ruta API a asignar un paciente al medico (asignar_paciente.tsx)
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

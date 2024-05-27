@@ -20,8 +20,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             await client.connect();
             const db = client.db(DATABASE_NAME);
 
-
-
             const medico = await db.collection('Medico').findOne({ 'user.clerkUserId': medicoClerkUserId });
             console.log('Medico:', medico);
             if(!medico) {
@@ -30,10 +28,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 return;
             }
 
+            const paciente = await db.collection('Paciente').findOne({ _id: new ObjectId(pacienteId) });
+            if (!paciente) {
+                await client.close();
+                res.status(404).json({ error: 'Paciente no encontrado' });
+                return;
+            }
 
-            await db.collection('Paciente').updateOne({ _id: new ObjectId(pacienteId) }, { $set: {  medicoId: medico._id } });
+            console.log('pacienteee', paciente)
 
-            
+            await db.collection('Paciente').updateOne(
+                { _id: new ObjectId(pacienteId) },
+                { $addToSet: { medicos: medico._id.toString() } }
+            );
+
             res.status(200).json({ message: 'Paciente asignado correctamente.' });
             await client.close();
         }
