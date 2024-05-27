@@ -25,7 +25,7 @@ const FormularioTabla = () => {
   const [playerId, setPlayerId] = useState('');
   const [totalReps, setTotalReps] = useState('');
   const [totalSeries, setTotalSeries] = useState('');
-  const [pacientes, setPacientes] = useState<Paciente[]>([]);
+  const [pacientes, setPacientes] = useState<Paciente[] | null>(null); 
 
   useEffect(() => {
     const fetchPacientes = async () => {
@@ -45,7 +45,12 @@ const FormularioTabla = () => {
           }),
         });
         const data = await response.json();
-        setPacientes(data);
+        if (Array.isArray(data)) {
+          setPacientes(data);
+        } else {
+          console.error('La respuesta no es un array:', data);
+          setPacientes([]);
+        }
       } catch (error) {
         console.log(
           'Error al obtener el listado de pacientes asignados',
@@ -151,7 +156,7 @@ const FormularioTabla = () => {
                 required
                 className="px-2 py-1.5 text-center text-black font-semibold  border rounded-lg"
               >
-                {pacientes.map((paciente) => (
+                {pacientes !== null && pacientes.map((paciente) => (
                   <option
                     key={paciente.user.email}
                     value={paciente.user.email}

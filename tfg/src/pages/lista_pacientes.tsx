@@ -42,7 +42,12 @@ const Lista_Pacientes = () => {
         });
         const data = await response.json();
         console.log('Datos pacientes asignados:', data);
-        setPacientesAsignados(data);
+        if (Array.isArray(data)) {
+          setPacientesAsignados(data);
+        } else {
+          console.error('La respuesta no es un array:', data);
+          setPacientesAsignados([]);
+        }
       } catch (error) {
         console.log(
           'Error al obtener el listado de pacientes asignados',
