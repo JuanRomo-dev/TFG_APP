@@ -74,7 +74,12 @@ const DashboardMedico = () => {
           body: JSON.stringify({ medicoClerkUserId: user.id }),
         });
         const data = await response.json();
-        setPacientes(data);
+        if (Array.isArray(data)) {
+          setPacientes(data);
+        } else {
+          console.error('La respuesta no es un array - ', data);
+          setPacientes([]);
+        }
         setIsLoading(false);
       } catch (error) {
         console.log('Error al obtener la lista de pacientes asignados', error);
@@ -95,7 +100,7 @@ const DashboardMedico = () => {
             body: JSON.stringify({ playerId: selectedPaciente }),
           });
           const data = await response.json();
-          setJuegos(data);
+          setJuegos(Array.isArray(data) ? data : []);
         } catch (error) {
           console.log('Error al obtener la lista de juegos completados', error);
         }
