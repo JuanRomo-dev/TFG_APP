@@ -26,7 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             
             const medicoId = medico._id;
             
-            const pacientesAsignados = await db.collection('Paciente').find({ medicoId: new ObjectId(medicoId) }).toArray(); 
+            const pacientesAsignados = await db.collection('Paciente').find({ medicos: { $in: [medicoId.toString()] } }).toArray();
             res.status(200).json(pacientesAsignados);
             await client.close();
         } catch (error) {
