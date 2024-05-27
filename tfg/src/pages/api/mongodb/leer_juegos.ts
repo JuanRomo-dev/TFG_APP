@@ -11,9 +11,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const client = new MongoClient(MONGO_URI);
             await client.connect();
             const db = client.db(DATABASE_NAME);
-            
-            const juegosDatos = db.collection('Juego').find({ playerId, completed: true }).toArray();
-            
+
+            playerId.toString();
+            const data = db.collection('Juego').find({ playerId, completed: true});
+
+            const juegosDatos = await data.toArray();
+            console.log('juegosDatos', juegosDatos)
+
+            await client.close();
             return res.status(200).json(juegosDatos);
         } catch (error) {
             console.error('Error al leer los datos de los juegos', error);

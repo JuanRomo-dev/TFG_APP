@@ -103,57 +103,61 @@ const DashboardMedico = () => {
     <div className="flex flex-row min-h-screen">
       <Sidebar />
       <div className="flex flex-col w-full p-8 bg-gray-100">
-        <h1 className="text-black text-3xl font-bold mb-14 text-center">
-          Dashboard Médico
-        </h1>
-        {isLoading ? (
-          <div className="text-black text-xl font-bold">Cargando lista...</div>
-        ) : (
-          <div className="bg-gray-100 flex flex-col space-y-6">
-            <div className="flex flex-row items-center justify-center">
-              <label className="block text-lg text-black font-bold mb-2 mr-2">
-                Seleccionar paciente:
-              </label>
-              <select
-                value={selectedPaciente}
-                onChange={(e) => setSelectedPaciente(e.target.value)}
-                className="px-2 py-1.5 text-center text-black font-semibold items-center justify-items-center border rounded-lg"
-              >
-                <option value="" disabled>
-                  Selecciona un paciente
-                </option>
-                {pacientes.map((paciente) => (
-                  <option key={paciente.user.email} value={paciente.user.email}>
-                    {paciente.user.firstName} {paciente.user.lastName}
+        <div>
+          <h1 className="text-black text-3xl font-bold mb-8 text-center">
+            Dashboard Médico
+          </h1>
+        </div>
+        <div  className="bg-gray-800 min-h-[800px] flex flex-col space-y-6">
+          {isLoading ? (
+            <div className="text-white text-xl font-bold">Cargando lista...</div>
+          ) : (
+            <div className="flex flex-col space-y-6">
+              <div className="flex flex-row items-center mt-4  justify-center">
+                <label className="block text-lg  text-white font-bold mb-2 mr-2">
+                  Seleccionar paciente:
+                </label>
+                <select
+                  value={selectedPaciente}
+                  onChange={(e) => setSelectedPaciente(e.target.value)}
+                  className="px-1.5 py-1.5 text-center text-black font-semibold items-center justify-items-center border rounded-lg"
+                >
+                  <option value="" disabled>
+                    Selecciona un paciente
                   </option>
-                ))}
-              </select>
-            </div>
-
-            {selectedPaciente && juegos.length > 0 && (
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <h2 className="text-2xl font-bold mb-4">
-                    Estadísticas ejercicio hombro - Golf Game
-                  </h2>
-                  <ChartComponent
-                    juegos={juegos}
-                    juegoName="Hombro - Golf Game"
-                  />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold mb-4">
-                    Estadísticas tobillo - Jump Game
-                  </h2>
-                  <ChartComponent
-                    juegos={juegos}
-                    juegoName="Tobillo - Jump Game"
-                  />
-                </div>
+                  {pacientes.map((paciente) => (
+                    <option key={paciente.user.email} className='font-medium' value={paciente.user.email}>
+                      {paciente.user.firstName} {paciente.user.lastName}
+                    </option>
+                  ))}
+                </select>
               </div>
-            )}
-          </div>
-        )}
+
+              {selectedPaciente && juegos.length > 0 && (
+                <div className="grid grid-cols-2 gap-4 items-center justify-items-center">
+                  <div>
+                    <h2 className="text-xl font-bold mb-4">
+                      Estadísticas ejercicio hombro - Golf Game
+                    </h2>
+                    <ChartComponent
+                      juegos={juegos}
+                      juegoName="hombro - golfgame"
+                    />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold mb-4">
+                      Estadísticas tobillo - Jump Game
+                    </h2>
+                    <ChartComponent
+                      juegos={juegos}
+                      juegoName="tobillo - jumpgame"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

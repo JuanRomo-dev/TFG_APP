@@ -1,3 +1,4 @@
+import { color } from 'chart.js/helpers';
 import React, { useEffect, useState } from 'react';
 import { Bar, Line } from 'react-chartjs-2';
 
@@ -38,16 +39,21 @@ const ChartComponent: React.FC<ChartComponentProps> = ({
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    console.log('useEffecttt');
+    console.log('Juegos', juegos);
     const fetchRawData = async (rawInputIds: string[]) => {
       try {
-        const response = await fetch('/api/mongodb/leer_datos_crudos', {
+        const response = await fetch('/api/mongodb/leer_datosCrudo', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ rawInputIds }),
         });
+
+        console.log('response', response);
         const data = await response.json();
+        console.log('Datos crudos', data);
         setRawData(data);
         setIsLoading(false);
       } catch (error) {
@@ -55,7 +61,10 @@ const ChartComponent: React.FC<ChartComponentProps> = ({
       }
     };
 
+    console.log('juegoss', juegos);
+    console.log('juegoName', juegoName);
     const filtered = juegos.filter((juego) => juego.name === juegoName);
+    console.log('filtered', filtered);
     setFilteredJuegos(filtered);
 
     if (filtered.length > 0) {
@@ -65,19 +74,54 @@ const ChartComponent: React.FC<ChartComponentProps> = ({
   }, [juegos, juegoName]);
 
   const dataForChart = {
-    labels: rawData.map((d) => d.timeStamp),
+    text: 'Ángulo vs Tiempo',
+    labels: rawData.map((d) => Math.trunc(d.timeStamp)),
     datasets: [
       {
         label: 'Ángulo',
         data: rawData.map((d) => d.angle),
-        borderColor: 'rgba(75,192,192,1)',
-        backgroundColor: 'rgba(75,192,192,0.2)',
+        borderColor: 'rgb(255, 255, 255)',
+        backgroundColor: 'rgb(135, 206, 250)',
         fill: true,
       },
     ],
   };
 
-  return isLoading ? <div>Cargando...</div> : <Line data={dataForChart} />;
+const options = {
+  plugins: {
+    title: {
+      display: true,
+      text: 'Progresión del movimiento en el tiempo',
+      font: {
+        size: 15 
+      },
+      color: 'white'
+    },
+    legend: {
+      display: false 
+    }
+  },
+  scales: {
+    x: {
+      title: {
+        display: true,
+        text: 'Tiempo (En segundos)',
+        color: 'white'
+      }
+    },
+    y: {
+      title: {
+        display: true,
+        text: 'Ángulo (En grados)',
+        color: 'white'
+      }
+    },
+  
+  }
+};
+
+
+  return isLoading ? <div>Cargando...</div> : <Line className='w-4/5 h-[400px] mr-8 text-white' data={dataForChart} options={options} />;
 };
 
 export default ChartComponent;
